@@ -12,12 +12,16 @@ export const repogetMonsterById = async (id) => {
 
 // Create monster
 export const repocreateMonster = async (monsterData) => {
-  return await Monster.create(monsterData);
+  const maxID = await Monster.find().sort({"id": -1}).limit(1);
+  monsterData["id"] = maxID[0].id + 1;
+  monsterData["image_url"] = "https://robohash.org/" + monsterData["id"] + "?set=set2&size =15x15";
+  const newMonster = new Monster(monsterData);
+  return await newMonster.save();
 };
 
 // Update monster
 export const repoupdateMonster = async (id, monsterData) => {
-  return await Monster.findByOneAndUpdate(id, monsterData, {new: true});
+  return await Monster.findOneAndUpdate(id, monsterData, {new: true});
 };
 
 // Delete monster
